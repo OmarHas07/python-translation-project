@@ -28,7 +28,24 @@ def translate_sequence(rna_sequence, genetic_code):
     str
         A string of the translated amino acids.
     """
-    pass
+    rna_sequence = rna_sequence.upper()
+    amino_acids = []
+    for i in range(0, len(rna_sequence), 3):
+        codon = rna_sequence[i:i+3]
+        if codon in genetic_code:
+            amino_acid = genetic_code[codon]
+            if amino_acid == '*':
+                break
+            amino_acids.append(amino_acid)
+    return ''.join(amino_acids)
+"""
+the above code I got from google, it was a little bit complicated for me but I'm now understand it, because the nucleotides are 
+lowercase rna_seq. upper is used to make sure the all the input is upper case, creating an empty variable for the AAs, 
+then in the for loop, (0 to start from the very begining, across the length of rnaseq, and in 3 steps of bases. 
+that defines the codon to start from first AA, and take 3 Bases or 3 steps to take 3 bases for each codon then to get the AA from the codon in the gentic code
+which already defined previously, if AA is a stop codon, then it breaks, 
+
+"""
 
 def get_all_translations(rna_sequence, genetic_code):
     """Get a list of all amino acid sequences encoded by an RNA sequence.
@@ -75,7 +92,7 @@ def get_reverse(sequence):
     >>> get_reverse('AUGC')
     'CGUA'
     """
-     rev = sequence[::-1]
+    rev = sequence[::-1]
     return(rev).upper()
 
 
@@ -91,9 +108,15 @@ def get_complement(sequence):
     >>> get_complement('AUGC')
     'UACG'
     """
-    complement = {'A': 'T', 'C': 'G', 'G': 'C', 'T': 'A'}
-    return ''.join([complement[base] for base in sequence])
-
+    sequence = sequence.upper() 
+    complement_map = {'A': 'U', 'U': 'A', 'G': 'C', 'C': 'G'}
+    complement = [complement_map[base] for base in sequence]
+    return ''.join(complement)
+"""
+the first sequence just ensure that the input is upper case, comp map, dicatianary to the RNA genetic code, then using the 
+dict I created (comp_map) to go through the sequence and get the complement, last step is to convert the list into a single 
+string with no separator between elements. 
+"""
 
 def reverse_and_complement(sequence):
     """Get the reversed and complemented form of a `sequence` of nucleotides.
@@ -108,20 +131,11 @@ def reverse_and_complement(sequence):
     >>> reverse_and_complement('AUGC')
     'GCAU'
     """
-    R = ""
-for base in sequence:
-if base == "A" :
-R += "T"
-elif base == "T"
-R += "A"
-elif base == "U"
-R += "A"
-elif base == "C"
-R+= "G"
-elif base == "G"
-R+= "C"
-return R[::-1]
-
+    sequence = sequence.upper() 
+    complement_map = {'A': 'U', 'U': 'A', 'G': 'C', 'C': 'G'}
+    complement = [complement_map[base] for base in sequence]
+    reverse_complement = ''.join(complement[::-1])
+    return reverse_complement
 
 def get_longest_peptide(rna_sequence, genetic_code):
     """Get the longest peptide encoded by an RNA sequence.
@@ -150,7 +164,7 @@ def get_longest_peptide(rna_sequence, genetic_code):
         A string of the longest sequence of amino acids encoded by
         `rna_sequence`.
     """
-    pass
+    
 
 
 if __name__ == '__main__':
