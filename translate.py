@@ -79,6 +79,8 @@ def get_all_translations(rna_sequence, genetic_code):
         `rna_sequence`.
     """
     pass
+# see if you feel comfortable trying to modify or incorporate your translate_sequence function into this to get the translations for all reading frames. 
+# you can call the function by using translate_sequence(rna_sequence, genetic_code) and you can change the rna_sequence to any sequence variable that you want to run the function on. 
 
 def get_reverse(sequence):
     """Reverse orientation of `sequence`.
