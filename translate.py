@@ -78,8 +78,49 @@ def get_all_translations(rna_sequence, genetic_code):
         A list of strings; each string is an sequence of amino acids encoded by
         `rna_sequence`.
     """
-    pass
+    """
+you need to figure out the the start codon and then return the sequences as a separate strgs. 
 
+"""
+
+"""
+    translations = []
+    for i in range(0, len(rna_sequence), 3):
+        codon = rna_sequence[i:i+3]
+        if codon in genetic_code:
+            aa = genetic_code[codon]
+            if aa == 'M':
+                for j in range(i+3, len(rna_sequence), 3):
+                    codon = rna_sequence[j:j+3]
+                    if codon in genetic_code:
+                        aa = genetic_code[codon]
+                        if aa == '*':
+                            translations.append(rna_sequence[i:j+3])
+                            break
+    return [''.join(genetic_code[codon] for codon in translation[i:i+3]) for translation in translations]
+"""
+    
+
+
+"""
+    rna_sequence = rna_sequence.upper()
+    translations = []
+    for i in range(0, len(rna_sequence), 3):
+        codon = rna_sequence[i:i+3]
+        if codon == "AUG":
+            aa_sequence = ""
+            for j in range(i, len(rna_sequence), 3):
+                codon = rna_sequence[j:j+3]
+                aa = genetic_code.get(codon, None)
+                if aa == "*":
+                    break
+                if aa is not None:
+                    aa_sequence += aa
+                else:
+                    break
+            translations.append(aa_sequence)
+    return translations
+"""
 def get_reverse(sequence):
     """Reverse orientation of `sequence`.
 
@@ -164,9 +205,10 @@ def get_longest_peptide(rna_sequence, genetic_code):
         A string of the longest sequence of amino acids encoded by
         `rna_sequence`.
     """
-    
+"""
+test the six reading frames which is the forward the reverse geting the longest sequence maybe using leng function     
 
-
+"""
 if __name__ == '__main__':
     genetic_code = {'GUC': 'V', 'ACC': 'T', 'GUA': 'V', 'GUG': 'V', 'ACU': 'T', 'AAC': 'N', 'CCU': 'P', 'UGG': 'W', 'AGC': 'S', 'AUC': 'I', 'CAU': 'H', 'AAU': 'N', 'AGU': 'S', 'GUU': 'V', 'CAC': 'H', 'ACG': 'T', 'CCG': 'P', 'CCA': 'P', 'ACA': 'T', 'CCC': 'P', 'UGU': 'C', 'GGU': 'G', 'UCU': 'S', 'GCG': 'A', 'UGC': 'C', 'CAG': 'Q', 'GAU': 'D', 'UAU': 'Y', 'CGG': 'R', 'UCG': 'S', 'AGG': 'R', 'GGG': 'G', 'UCC': 'S', 'UCA': 'S', 'UAA': '*', 'GGA': 'G', 'UAC': 'Y', 'GAC': 'D', 'UAG': '*', 'AUA': 'I', 'GCA': 'A', 'CUU': 'L', 'GGC': 'G', 'AUG': 'M', 'CUG': 'L', 'GAG': 'E', 'CUC': 'L', 'AGA': 'R', 'CUA': 'L', 'GCC': 'A', 'AAA': 'K', 'AAG': 'K', 'CAA': 'Q', 'UUU': 'F', 'CGU': 'R', 'CGC': 'R', 'CGA': 'R', 'GCU': 'A', 'GAA': 'E', 'AUU': 'I', 'UUG': 'L', 'UUA': 'L', 'UGA': '*', 'UUC': 'F'}
     rna_seq = ("AUG"
