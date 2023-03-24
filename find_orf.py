@@ -57,21 +57,49 @@ def vet_nucleotide_sequence(sequence):
     # any valid RNA and DNA sequence strings, respectively (and only strings of
     # RNA and DNA bases).
     # Read the docstring above for additional clues.
-    rna_pattern_str = r'AUCG'
-    dna_pattern_str = r'ATCG'
+
+    ''' ###test   
+    rna_pattern_str = r'[AUCG]*$'
+    dna_pattern_str = r'[ATCG]*$'
     ##########################################################################
 
     rna_pattern = re.compile(rna_pattern_str)
     dna_pattern = re.compile(dna_pattern_str)
 
-    if rna_pattern.match(sequence):
-        return
-    if dna_pattern.match(sequence):
-        return
-    else:
+     if rna_pattern.match(sequence):
+         return
+     if dna_pattern.match(sequence):
+         return
+     else:
+         raise Exception("Invalid sequence: {0!r}".format(sequence))
+          return
+     if dna_pattern.match(sequence):
+         return
+     else:
         raise Exception("Invalid sequence: {0!r}".format(sequence))
 
+    '''
 
+    
+    rna_pattern_str = r'[AUCGaucg]*$'
+    dna_pattern_str = r'[ATCGatcg]*$'
+
+    rna_pattern = re.compile(rna_pattern_str)
+    dna_pattern = re.compile(dna_pattern_str)
+
+    if not sequence.strip(): # empty or whitespace-only string is valid
+        return
+
+    if not rna_pattern.match(sequence) and not dna_pattern.match(sequence):
+        raise Exception("Invalid sequence: {0!r}".format(sequence))
+
+    if rna_pattern.match(sequence) and dna_pattern.match(sequence):
+        raise Exception("Invalid sequence: {0!r}: sequence contains both RNA and DNA bases".format(sequence))
+
+    if rna_pattern.match(sequence):
+        return 
+    elif dna_pattern.match(sequence):
+        return 
 
 def vet_codon(codon):
     """
@@ -119,10 +147,10 @@ def vet_codon(codon):
     # Change `codon_pattern_str` so that it will match any valid codons, and
     # only valid codons.
     # Read the docstring above for additional clues.
-    codon_pattern_str = r'AUG'
+    codon_pattern_str = r'^[AUGC]{3}$'
     ##########################################################################
 
-    codon_pattern = re.compile(codon_pattern_str)
+    codon_pattern = re.compile(codon_pattern_str, re.IGNORECASE)
 
     if codon_pattern.match(codon):
         return
@@ -210,8 +238,16 @@ def find_first_orf(sequence,
     orf_pattern_str = r'AUGGUAUAA'
     ##########################################################################
 
-    # Create the regular expression object
+    #start_regex = '|'.join(starts)
+    #stop_regex = '|'.join(stops)
+    #orf_pattern_str = r'(' + start_regex + r')\w*?(' + stop_regex + r')'   
+    #orf_pattern_str = r'(' + '|'.join(starts) + r')([ACGU]{3})*    
+    
+    orf_pattern_str = r'(' + '|'.join(starts) + r')([ACGU]{3})*(' + '|'.join(stops) + r')'
     orf_pattern = re.compile(orf_pattern_str)
+
+    # Create the regular expression object
+    #orf_pattern = re.compile(orf_pattern_str)
     # Search the sequence
     match_object = orf_pattern.search(seq)
     if match_object:
