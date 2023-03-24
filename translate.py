@@ -78,11 +78,38 @@ def get_all_translations(rna_sequence, genetic_code):
         A list of strings; each string is an sequence of amino acids encoded by
         `rna_sequence`.
     """
+#<<<<<<< HEAD
     """
 you need to figure out the the start codon and then return the sequences as a separate strgs. 
+=======
+    pass
+# see if you feel comfortable trying to modify or incorporate your translate_sequence function into this to get the translations for all reading frames. 
+# you can call the function by using translate_sequence(rna_sequence, genetic_code) and you can change the rna_sequence to any sequence variable that you want to run the function on. 
+>>>>>>> f3f235e14f8940c89b4be4c122b5f2d20302b1a4
 
 """
 
+    amino_acids = []
+    for i in range(3):
+    codon_start = i
+    while codon_start <= len(rna_sequence) - 3:
+    codon = rna_sequence[codon_start:codon_start+3]
+    if codon == 'AUG':  
+    amino_acids_seq = ''
+    x = codon_start
+    while x <= len(rna_sequence) - 3:
+    codon = rna_sequence[x:x+3]
+    amino_acids = genetic_code.get(codon, '*')
+    if amino_acids == '*':  
+    break
+    amino_acids_seq += amino_acids
+    x += 3  
+    if amino_acids_seq:
+    amino_acids_seq.append(amino_acids_seq)
+    codon_start = x + 3  
+    else:
+    codon_start += 3  
+    return amino_acids_seq
 """
     translations = []
     for i in range(0, len(rna_sequence), 3):
