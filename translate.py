@@ -78,76 +78,34 @@ def get_all_translations(rna_sequence, genetic_code):
         A list of strings; each string is an sequence of amino acids encoded by
         `rna_sequence`.
     """
-#<<<<<<< HEAD
-    """
-you need to figure out the the start codon and then return the sequences as a separate strgs. 
-=======
-    pass
-# see if you feel comfortable trying to modify or incorporate your translate_sequence function into this to get the translations for all reading frames. 
-# you can call the function by using translate_sequence(rna_sequence, genetic_code) and you can change the rna_sequence to any sequence variable that you want to run the function on. 
->>>>>>> f3f235e14f8940c89b4be4c122b5f2d20302b1a4
 
-"""
-
-    amino_acids = []
-    for i in range(3):
-    codon_start = i
-    while codon_start <= len(rna_sequence) - 3:
-    codon = rna_sequence[codon_start:codon_start+3]
-    if codon == 'AUG':  
-    amino_acids_seq = ''
-    x = codon_start
-    while x <= len(rna_sequence) - 3:
-    codon = rna_sequence[x:x+3]
-    amino_acids = genetic_code.get(codon, '*')
-    if amino_acids == '*':  
-    break
-    amino_acids_seq += amino_acids
-    x += 3  
-    if amino_acids_seq:
-    amino_acids_seq.append(amino_acids_seq)
-    codon_start = x + 3  
-    else:
-    codon_start += 3  
-    return amino_acids_seq
-"""
-    translations = []
-    for i in range(0, len(rna_sequence), 3):
-        codon = rna_sequence[i:i+3]
-        if codon in genetic_code:
-            aa = genetic_code[codon]
-            if aa == 'M':
-                for j in range(i+3, len(rna_sequence), 3):
-                    codon = rna_sequence[j:j+3]
-                    if codon in genetic_code:
-                        aa = genetic_code[codon]
-                        if aa == '*':
-                            translations.append(rna_sequence[i:j+3])
-                            break
-    return [''.join(genetic_code[codon] for codon in translation[i:i+3]) for translation in translations]
-"""
-    
-
-
-"""
     rna_sequence = rna_sequence.upper()
-    translations = []
-    for i in range(0, len(rna_sequence), 3):
-        codon = rna_sequence[i:i+3]
-        if codon == "AUG":
-            aa_sequence = ""
-            for j in range(i, len(rna_sequence), 3):
-                codon = rna_sequence[j:j+3]
-                aa = genetic_code.get(codon, None)
-                if aa == "*":
-                    break
-                if aa is not None:
-                    aa_sequence += aa
-                else:
-                    break
-            translations.append(aa_sequence)
-    return translations
-"""
+    all_translations = []
+
+    for frame in range(3):
+        amino_acids = []
+        started_translation = False
+        for i in range(frame, len(rna_sequence), 3):
+            codon = rna_sequence[i:i+3]
+            if codon in genetic_code:
+                amino_acid = genetic_code[codon]
+                
+                if not started_translation and amino_acid == 'M':
+                    started_translation = True
+                    
+                if started_translation:
+                    if amino_acid == '*':
+                        break
+                    amino_acids.append(amino_acid)
+        
+        if started_translation:
+            all_translations.append(''.join(amino_acids))
+
+    return all_translations
+
+
+
+
 def get_reverse(sequence):
     """Reverse orientation of `sequence`.
 
@@ -232,10 +190,60 @@ def get_longest_peptide(rna_sequence, genetic_code):
         A string of the longest sequence of amino acids encoded by
         `rna_sequence`.
     """
+
+
+
+
+
 """
 test the six reading frames which is the forward the reverse geting the longest sequence maybe using leng function     
 
 """
+
+def get_longest_peptide(rna_sequence, genetic_code):
+    def get_peptides(sequence):
+        peptides = []
+        for frame in range(3):
+            peptide = []
+            started_translation = False
+            for i in range(frame, len(sequence), 3):
+                codon = sequence[i:i+3]
+                if codon in genetic_code:
+                    amino_acid = genetic_code[codon]
+                    if not started_translation and amino_acid == 'M':
+                        started_translation = True
+                    if started_translation:
+                        if amino_acid == '*':
+                            peptides.append(''.join(peptide))
+                            peptide = []
+                            started_translation = False
+                        else:
+                            peptide.append(amino_acid)
+                            
+            # Add the last peptide if the sequence did not end with a stop codon.
+            if started_translation and peptide:
+                peptides.append(''.join(peptide))
+        return peptides
+
+##I couldn't use the reverse complenment function I already made earlier it kept giving me an error for some reason, I thought I can just use it instead of writing a new function here
+    def reverse_complement(sequence):
+        complement = {'A': 'U', 'U': 'A', 'C': 'G', 'G': 'C'}
+        return ''.join(complement[base] for base in reversed(sequence))
+
+    rna_sequence = rna_sequence.upper()
+    reverse_complement_rna = reverse_complement(rna_sequence)
+
+    # Get peptides for both forward and reverse reading frames.
+    peptides = get_peptides(rna_sequence) + get_peptides(reverse_complement_rna)
+
+    # Find the longest peptide among all peptides.
+    longest_peptide = max(peptides, key=len, default='')
+
+    return longest_peptide
+
+
+
+
 if __name__ == '__main__':
     genetic_code = {'GUC': 'V', 'ACC': 'T', 'GUA': 'V', 'GUG': 'V', 'ACU': 'T', 'AAC': 'N', 'CCU': 'P', 'UGG': 'W', 'AGC': 'S', 'AUC': 'I', 'CAU': 'H', 'AAU': 'N', 'AGU': 'S', 'GUU': 'V', 'CAC': 'H', 'ACG': 'T', 'CCG': 'P', 'CCA': 'P', 'ACA': 'T', 'CCC': 'P', 'UGU': 'C', 'GGU': 'G', 'UCU': 'S', 'GCG': 'A', 'UGC': 'C', 'CAG': 'Q', 'GAU': 'D', 'UAU': 'Y', 'CGG': 'R', 'UCG': 'S', 'AGG': 'R', 'GGG': 'G', 'UCC': 'S', 'UCA': 'S', 'UAA': '*', 'GGA': 'G', 'UAC': 'Y', 'GAC': 'D', 'UAG': '*', 'AUA': 'I', 'GCA': 'A', 'CUU': 'L', 'GGC': 'G', 'AUG': 'M', 'CUG': 'L', 'GAG': 'E', 'CUC': 'L', 'AGA': 'R', 'CUA': 'L', 'GCC': 'A', 'AAA': 'K', 'AAG': 'K', 'CAA': 'Q', 'UUU': 'F', 'CGU': 'R', 'CGC': 'R', 'CGA': 'R', 'GCU': 'A', 'GAA': 'E', 'AUU': 'I', 'UUG': 'L', 'UUA': 'L', 'UGA': '*', 'UUC': 'F'}
     rna_seq = ("AUG"
